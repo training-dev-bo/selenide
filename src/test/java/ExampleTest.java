@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import org.junit.Test;
 
 import java.io.FileInputStream;
+import java.time.Duration;
 import java.util.Properties;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -16,12 +17,14 @@ public class ExampleTest {
         Properties credentials = new Properties();
         credentials.load(credFile);
         Configuration.browser = "chrome";
+        Configuration.startMaximized = true;
         open("https://todoist.com/users/showlogin");
         $("[name='email']").setValue(credentials.getProperty("user"));
         $("#password").setValue(credentials.getProperty("password"));
         $(".sel_login").click();
         $("#left_menu").waitUntil(Condition.appear, 5000);
-        SelenideElement leftMenu = $("#left_menu #top_filters");
+        $("#left_menu").should(Condition.visible, Duration.ofSeconds(5) );
+        SelenideElement leftMenu = $("#top_filters");
         System.out.println($$("li").texts());
         System.out.println(leftMenu.$$("li").texts());
     }
