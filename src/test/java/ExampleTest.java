@@ -1,13 +1,15 @@
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.SelenideElement;
 import org.junit.Test;
+import pages.LeftMenu;
+import pages.Login;
+import pages.Today;
 
 import java.io.FileInputStream;
 import java.util.Properties;
 
 import static com.codeborne.selenide.Selenide.*;
-
+import static org.junit.Assert.*;
 public class ExampleTest {
 
     @Test
@@ -17,12 +19,11 @@ public class ExampleTest {
         credentials.load(credFile);
         Configuration.browser = "chrome";
         open("https://todoist.com/users/showlogin");
-        $("[name='email']").setValue(credentials.getProperty("user"));
-        $("#password").setValue(credentials.getProperty("password"));
-        $(".sel_login").click();
-        $("#left_menu").waitUntil(Condition.appear, 5000);
-        SelenideElement leftMenu = $("#left_menu #top_filters");
-        System.out.println($$("li").texts());
-        System.out.println(leftMenu.$$("li").texts());
+        new Login()
+            .loginAs(credentials.getProperty("user"),credentials.getProperty("password"))
+            .container.waitUntil(Condition.appear,5000);
+        new Today().container.should(Condition.enabled);
+        assertEquals("Hoy", new LeftMenu().selectedMenu().text());
+        assertEquals("Hoy", new LeftMenu().selectedMenuStream().text());
     }
 }
