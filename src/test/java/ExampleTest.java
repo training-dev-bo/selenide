@@ -1,6 +1,7 @@
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -24,6 +25,11 @@ public class ExampleTest {
         $(".sel_login").click();
         $("#left_menu").waitUntil(Condition.appear, 5000);
         $("#left_menu").should(Condition.visible, Duration.ofSeconds(5) );
+        $("#todoist_app").should(Condition.enabled);
+        Assert.assertEquals("Hoy",$$("#top_filters li")
+                .filter(Condition.attributeMatching("class",".*current"))
+                .first()
+                .$(".item_content").text());
         SelenideElement leftMenu = $("#top_filters");
         System.out.println($$("li").texts());
         System.out.println(leftMenu.$$("li").texts());
